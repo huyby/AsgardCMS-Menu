@@ -91,9 +91,8 @@ class MenuServiceProvider extends ServiceProvider
         if ($this->hasChildren($item)) {
             $this->addChildrenToMenu($item->title, $item->items, $menu, ['icon' => $item->icon, 'target' => $item->target]);
         } else {
-            $target = $item->uri ?: $item->url;
             $menu->url(
-                $target,
+                $item->getUrl(),
                 $item->title,
                 ['target' => $item->target,
                     'icon' => $item->icon]
@@ -127,8 +126,7 @@ class MenuServiceProvider extends ServiceProvider
         if ($this->hasChildren($child)) {
             $this->addChildrenToMenu($child->title, $child->items, $sub);
         } else {
-            $target = $child->uri ?: $child->url;
-            $sub->url($target, $child->title, 0, ['icon' => $child->icon, 'target' => $child->target]);
+            $sub->url($child->getUrl(), $child->title, 0, ['icon' => $child->icon, 'target' => $child->target]);
         }
     }
 

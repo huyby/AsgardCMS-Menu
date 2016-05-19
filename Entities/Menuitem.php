@@ -4,6 +4,9 @@ use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use TypiCMS\NestableTrait;
 
+use Modules\Page\Entities\Page;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
 class Menuitem extends Model
 {
     use Translatable, NestableTrait;
@@ -35,6 +38,30 @@ class Menuitem extends Model
     public function menu()
     {
         return $this->belongsTo('Modules\Menu\Entities\Menu');
+    }
+
+    /**
+     * Get page relation
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function page()
+    {
+        return $this->belongsTo(Page::class);
+    }
+
+    /**
+     * Get the URL for building the menu
+     * @return string
+     */
+    public function getUrl()
+    {
+        if ($this->page_id) {
+            $this->uri = $this->page->slug;
+        }
+        if ($this->uri) {
+            return LaravelLocalization::getCurrentLocale() . '/' . $this->uri;
+        }
+        return $this->url;
     }
 
     /**
