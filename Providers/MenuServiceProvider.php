@@ -95,7 +95,8 @@ class MenuServiceProvider extends ServiceProvider
                 $item->getUrl(),
                 $item->title,
                 ['target' => $item->target,
-                    'icon' => $item->icon]
+                    'icon' => $item->icon,
+                    'page_id' => $item->page_id]
             );
         }
     }
