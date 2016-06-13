@@ -33,10 +33,15 @@ class EloquentMenuItemRepository extends EloquentBaseRepository implements MenuI
      */
     public function rootsForMenu($menuId)
     {
-        return $this->model->whereHas('translations', function (Builder $q) {
-            $q->where('status', 1);
-            $q->where('locale', App::getLocale());
-        })->with('translations')->whereMenuId($menuId)->orderBy('position')->get();
+        return $this->model
+            ->whereHas('translations', function (Builder $q) {
+                $q->where('status', 1);
+                $q->where('locale', App::getLocale());
+            })
+            ->with('translations')
+            ->with('page.translations')
+            ->whereMenuId($menuId)
+            ->orderBy('position')->get();
     }
 
     /**
@@ -47,7 +52,13 @@ class EloquentMenuItemRepository extends EloquentBaseRepository implements MenuI
      */
     public function allRootsForMenu($menuId)
     {
-        return $this->model->with('translations')->whereMenuId($menuId)->orderBy('parent_id')->orderBy('position')->get();
+        return $this->model
+            ->with('translations')
+            ->with('page.translations')
+            ->whereMenuId($menuId)
+            ->orderBy('parent_id')
+            ->orderBy('position')
+            ->get();
     }
 
     /**
@@ -91,7 +102,11 @@ class EloquentMenuItemRepository extends EloquentBaseRepository implements MenuI
      */
     public function getRootForMenu($menuId)
     {
-        return $this->model->with('translations')->where(['menu_id' => $menuId, 'is_root' => true])->firstOrFail();
+        return $this->model
+            ->with('translations')
+            ->with('page.translations')
+            ->where(['menu_id' => $menuId, 'is_root' => true])
+            ->firstOrFail();
     }
 
     /**
@@ -114,10 +129,14 @@ class EloquentMenuItemRepository extends EloquentBaseRepository implements MenuI
      */
     public function findByUriInLanguage($uri, $locale)
     {
-        return $this->model->whereHas('translations', function (Builder $q) use ($locale, $uri) {
-            $q->where('status', 1);
-            $q->where('locale', $locale);
-            $q->where('uri', $uri);
-        })->with('translations')->first();
+        return $this->model
+            ->whereHas('translations', function (Builder $q) use ($locale, $uri) {
+                $q->where('status', 1);
+                $q->where('locale', $locale);
+                $q->where('uri', $uri);
+            })
+            ->with('translations')
+            ->with('page.translations')
+            ->first();
     }
 }
